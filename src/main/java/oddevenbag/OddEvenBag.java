@@ -3,65 +3,76 @@ package oddevenbag;
 import java.util.*;
 
 public class OddEvenBag {
-    List<Integer> bag;
+    List<Integer> numbers;
+    int[] evenOdd = {0,0};
 
     // Create an empty OddEvenBag
     OddEvenBag() {
-        bag = new ArrayList<>();
+        numbers = new ArrayList<>();
     }
 
     // Create an OddEvenBag using the elements in the provided array
     // requires: seedArray is not null
     OddEvenBag(int[] seedArray) {
         int len = seedArray.length;
-        bag = new ArrayList<>();
+        numbers = new ArrayList<>();
         for (int i=0; i<len; i++) {
-            bag.add(seedArray[i]);
+            add(seedArray[i]);
         }
     }
 
     // add x to the OddEvenBag
     void add(int x) {
-        bag.add(x);
+        numbers.add(x);
+        evenOdd[x % 2]++;
     }
 
     // remove x from the OddEvenBag
     // if x does not exist in the Bag then do nothing
     void remove(int x) {
-        int idx = bag.indexOf(x);
+        int idx = numbers.indexOf(x);
         if (idx != -1) {
-            bag.remove(idx);
+            numbers.remove(idx);
+            evenOdd[x % 2]--;
         }
     }
 
     // increment each value in the OddEvenBag by 1
     void increment() {
-        int len = bag.size();
+        int len = numbers.size();
+        int temp;
         for (int i=0; i<len; i++) {
-            bag.set(i,bag.get(i) + 1);
+            numbers.set(i,numbers.get(i) + 1);
         }
+        temp = evenOdd[0];
+        evenOdd[0] = evenOdd[1];
+        evenOdd[1] = temp;
     }
 
     // decrement each value in the OddEvenBag by 1
     void decrement() {
-        int len = bag.size();
+        int len = numbers.size();
+        int temp;
         for (int i=0; i<len; i++) {
-            bag.set(i,bag.get(i) - 1);
+            numbers.set(i,numbers.get(i) - 1);
         }
+        temp = evenOdd[0];
+        evenOdd[0] = evenOdd[1];
+        evenOdd[1] = temp;
     }
 
     // return true if this OddEvenBag contains x
     // and false otherwise
     boolean contains(int x) {
-        return bag.contains(x);
+        return numbers.contains(x);
     }
 
     // count the occurrences of x in the OddEvenBag
     int getCount(int x) {
         int count = 0;
-        int len = bag.size();
+        int len = numbers.size();
         for (int i=0; i<len; i++) {
-            if (bag.get(i) == x) {
+            if (numbers.get(i) == x) {
                 count++;
             }
         }
@@ -71,40 +82,18 @@ public class OddEvenBag {
     // return the sum of the values in the OddEvenBag
     long sum() {
         int sum = 0;
-        int len = bag.size();
+        int len = numbers.size();
         for (int i=0; i<len; i++) {
-            sum += bag.get(i);
+            sum += numbers.get(i);
         }
         return sum;
     }
 
     boolean equals(OddEvenBag b) {
-        int len = bag.size();
-        int evens = 0;
-        int odds = 0;
-        if (len == b.bag.size()) {
-            for (int i=0; i<len; i++) {
-                if (bag.get(i) % 2 == 0) {
-                    evens++;
-                } else {
-                    odds++;
-                }
-
-                if (b.bag.get(i) % 2 == 0) {
-                    evens--;
-                } else {
-                    odds--;
-                }
-            }
-            if (evens == 0 && odds == 0) {
-                return true;
-            }
-        }
-        return false;
+        return evenOdd[0] == b.evenOdd[0] && evenOdd[1] == b.evenOdd[1];
     }
 
-    int hashcode() {
-        
+    public int hashCode() {
+        return Integer.parseInt(Integer.toString(evenOdd[0]) + Integer.toString(evenOdd[1]));
     }
-
 }
